@@ -51,8 +51,29 @@ Four tables. Use **Prisma** or **TypeORM** — decide at scaffold time and recor
 | `slug` | text, unique | used in FE routes `/stories/[slug]` |
 | `description` | text | |
 | `video_url` | text | local public storage for MVP |
+| `thumbnail_url` | text, nullable | cover image for the catalog card |
+| `cover_emoji` | text | fallback emoji when no thumbnail |
+| `cover_gradient` | text | Tailwind gradient string for card background |
+| `duration_minutes` | integer | approximate runtime |
 | `is_premium` | boolean | free 3 stories have `is_premium = false` |
+| `categories` | text[] | one or more slugs from the canonical category list |
 | `created_at`, `updated_at` | timestamptz | |
+
+### Story categories (canonical slug list)
+
+The `categories` column stores an array of these slugs. Use a PostgreSQL `text[]` column with a check constraint, or a separate `story_categories` join table if query performance requires it.
+
+| Slug | Label |
+|---|---|
+| `cerita_rakyat` | Cerita Rakyat |
+| `penghantar_tidur` | Penghantar Tidur |
+| `hewan` | Dunia Hewan |
+| `petualangan` | Petualangan |
+| `persahabatan` | Persahabatan & Nilai |
+| `alam` | Alam & Sains |
+| `keluarga` | Keluarga |
+
+**API filtering:** `GET /api/v1/stories?category=cerita_rakyat` returns all stories whose `categories` array contains the given slug. Combine with `?is_premium=false` for free-only results. Both params are optional — omitting them returns the full catalog.
 
 ### `payments`
 | column | type | notes |
