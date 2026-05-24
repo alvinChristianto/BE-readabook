@@ -17,7 +17,7 @@ export class PremiumGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<Request & { cookies: Record<string, string> }>();
-    const slug = req.params?.slug;
+    const slug = req.params?.slug as string | undefined;
 
     if (slug) {
       const story = await this.prisma.story.findUnique({
