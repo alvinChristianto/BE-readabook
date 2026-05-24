@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AuthMethod {
+  google
+  email
+}
+
+enum Role {
+  admin
+  user
+}
+
+enum SubStatus {
+  active
+  expired
+  pending
+}
+
+enum Plan {
+  ksatria_cerita
+  penjaga_keajaiban
+}
+
+enum Billing {
+  monthly
+  yearly
+}
+
+enum PayStatus {
+  pending
+  success
+  failed
+}
+
+model User {
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  passwordHash String?
+  googleId     String?       @unique
+  authMethod   AuthMethod
+  role         Role          @default(user)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  subscription Subscription?
+  payments     Payment[]
+}
+
+model Subscription {
+  id            String    @id @default(uuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id])
+  status        SubStatus
+  plan          Plan
+  billingPeriod Billing
+  startDate     DateTime
+  endDate       DateTime
+}
+
+model Story {
+  id              String      @id @default(uuid())
+  title           String
+  slug            String      @unique
+  description     String
+  thumbnailUrl    String?
+  coverEmoji      String
+  coverGradient   String
+  durationMinutes Int
+  isPremium       Boolean     @default(false)
+  categories      String[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  pages           StoryPage[]
+}
+
+model StoryPage {
+  id              String   @id @default(uuid())
+  storyId         String
+  story           Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  pageNumber      Int
+  text            String
+  animationUrl    String
+  audioUrl        String
+  backgroundColor String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([storyId, pageNumber])
+}
+
+model Payment {
+  id            String    @id @default(uuid())
+  orderId       String    @unique
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  amount        Int
+  paymentMethod String    @default("qris")
+  status        PayStatus @default(pending)
+  plan          Plan
+  billingPeriod Billing
+  createdAt     DateTime  @default(now())
+}

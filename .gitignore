@@ -1,0 +1,30 @@
+# compiled output
+/dist
+/meilisearch
+/tsconfig.build.tsbuildinfo
+
+# dependencies
+/node_modules
+
+# misc
+/.npm
+/.eslintcache
+/.svelte-kit
+/npm-debug.log*
+/yarn-debug.log*
+/yarn-error.log*
+/pnpm-debug.log*
+/lerna-debug.log*
+
+# dotenv environment variables
+.env
+.env.example
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
