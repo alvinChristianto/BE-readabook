@@ -8,14 +8,15 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   // Admin user
-  const adminPassword = process.env.ADMIN_SEED_PASSWORD ?? 'admin123';
+  await prisma.user.deleteMany({ where: { email: 'admin@dongengdigital.id' } });
+  const adminPassword = process.env.ADMIN_SEED_PASSWORD ?? '12345678';
   const passwordHash = await bcrypt.hash(adminPassword, 12);
   await prisma.user.upsert({
-    where: { email: 'admin@dongengdigital.id' },
-    update: {},
+    where: { email: 'admin@gmail.com' },
+    update: { passwordHash, authMethod: 'email', role: 'admin' },
     create: {
       name: 'Admin',
-      email: 'admin@dongengdigital.id',
+      email: 'admin@gmail.com',
       passwordHash,
       authMethod: 'email',
       role: 'admin',
