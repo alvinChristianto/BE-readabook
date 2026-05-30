@@ -74,6 +74,7 @@ model Story {
   coverGradient   String
   durationMinutes Int
   isPremium       Boolean     @default(false)
+  isActive        Boolean     @default(true)
   categories      String[]
   createdAt       DateTime    @default(now())
   updatedAt       DateTime    @updatedAt
@@ -85,10 +86,10 @@ model StoryPage {
   storyId         String
   story           Story    @relation(fields: [storyId], references: [id], onDelete: Cascade)
   pageNumber      Int
-  text            String
-  animationUrl    String
-  audioUrl        String
-  backgroundColor String
+  text            String?
+  animationUrl    String?
+  audioUrl        String?
+  backgroundColor String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
