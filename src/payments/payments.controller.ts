@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Get, Body, UseGuards, Req } from '@nestjs/common';
 import { IsEnum, IsString } from 'class-validator';
 import type { Request } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -23,6 +23,12 @@ export class PaymentsController {
     @Req() req: Request & { user: { id: string } },
   ) {
     return this.payments.createQris(req.user.id, dto.plan, dto.billingPeriod);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('history')
+  getHistory(@Req() req: Request & { user: { id: string } }) {
+    return this.payments.getHistory(req.user.id);
   }
 
   @Post('webhook')

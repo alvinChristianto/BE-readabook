@@ -61,6 +61,33 @@ export class PaymentsService {
     };
   }
 
+  async getHistory(userId: string) {
+    const payments = await this.prisma.payment.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        orderId: true,
+        amount: true,
+        paymentMethod: true,
+        status: true,
+        plan: true,
+        billingPeriod: true,
+        createdAt: true,
+      },
+    });
+    return payments.map((p) => ({
+      id: p.id,
+      order_id: p.orderId,
+      amount: p.amount,
+      payment_method: p.paymentMethod,
+      status: p.status,
+      plan: p.plan,
+      billing_period: p.billingPeriod,
+      created_at: p.createdAt,
+    }));
+  }
+
   async handleWebhook(body: Record<string, string>) {
     const { order_id, status_code, gross_amount, signature_key, transaction_status } = body;
     const serverKey = this.config.get<string>('MIDTRANS_SERVER_KEY') ?? '';
