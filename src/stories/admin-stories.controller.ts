@@ -24,7 +24,7 @@ import { UpdatePageDto } from './dto/update-page.dto';
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB
 
-const WEBM_MIME = 'video/webm';
+const VIDEO_MIMES = ['video/webm', 'video/mp4'];
 const MP3_MIMES = ['audio/mpeg', 'audio/mp3'];
 
 @UseGuards(AdminGuard)
@@ -61,6 +61,11 @@ export class AdminStoriesController {
   }
 
   // ── Page endpoints ───────────────────────────────────────────────────────
+
+  @Get(':storyId/pages')
+  getPages(@Param('storyId') storyId: string) {
+    return this.stories.getPages(storyId);
+  }
 
   @Post(':storyId/pages')
   createPage(
@@ -110,8 +115,8 @@ export class AdminStoriesController {
     if (!file) throw new BadRequestException('No file uploaded');
     if (file.size > MAX_FILE_SIZE)
       throw new BadRequestException('File exceeds 50 MB limit');
-    if (file.mimetype !== WEBM_MIME)
-      throw new BadRequestException('Only .webm files are accepted');
+    if (!VIDEO_MIMES.includes(file.mimetype))
+      throw new BadRequestException('Only .webm or .mp4 files are accepted');
 
     const animationUrl = await this.stories.uploadAnimation(
       storyId,

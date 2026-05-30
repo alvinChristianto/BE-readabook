@@ -70,6 +70,14 @@ export class StoriesService {
 
   // ── Admin — Page CRUD ────────────────────────────────────────────────────
 
+  async getPages(storyId: string) {
+    await this.requireStory(storyId);
+    return this.prisma.storyPage.findMany({
+      where: { storyId },
+      orderBy: { pageNumber: 'asc' },
+    });
+  }
+
   async createPage(storyId: string, dto: CreatePageDto) {
     await this.requireStory(storyId);
     const last = await this.prisma.storyPage.findFirst({
@@ -112,7 +120,8 @@ export class StoriesService {
     mimeType: string,
   ): Promise<string> {
     const page = await this.requirePage(storyId, pageId);
-    const path = `animations/${storyId}/${pageId}.webm`;
+    const ext = mimeType === 'video/mp4' ? 'mp4' : 'webm';
+    const path = `animations/${storyId}/${pageId}.${ext}`;
 
     if (page.animationUrl) {
       const oldPath = this.extractPath(page.animationUrl);
