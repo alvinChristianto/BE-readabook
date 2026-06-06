@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "StoryPage" ALTER COLUMN "text" DROP NOT NULL,
+ALTER COLUMN "animationUrl" DROP NOT NULL,
+ALTER COLUMN "audioUrl" DROP NOT NULL,
+ALTER COLUMN "backgroundColor" DROP NOT NULL;
